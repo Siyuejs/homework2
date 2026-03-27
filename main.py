@@ -153,3 +153,39 @@ class Student:
             # 作业要求：捕获非数字输入的ValueError异常
             except ValueError:
                 print("❌ 输入错误：请输入有效的整数，不要输入字母、符号等非数字内容")
+
+    # ==========================================
+    # 功能3：生成考场安排表
+    # ==========================================
+    def generate_exam_arrangement(self):
+        """
+        随机打乱学生顺序，生成考场安排表.txt，符合作业格式要求
+        """
+        # 先判断是否已加载学生数据
+        if not self.students_dict:
+            print("⚠️  提示：请先加载学生数据")
+            return
+
+        # 1. 把学生列表随机打乱
+        student_list = list(self.students_dict.values())
+        random.shuffle(student_list)
+        # 把打乱后的顺序保存到实例变量，供后续生成准考证使用
+        self.exam_seat_list = student_list
+
+        # 2. 写入考场安排表.txt文件
+        file_name = "考场安排表.txt"
+        try:
+            with open(file_name, "w", encoding="utf-8") as f:
+                # 作业要求：第一行必须是生成时间
+                f.write(f"生成时间：{ExamSystem.get_format_time()}\n")
+                # 写入表头
+                f.write("考场座位号,姓名,学号\n")
+                # 遍历写入每个学生的信息，座位号从1开始递增
+                for seat_num, student in enumerate(student_list, 1):
+                    f.write(f"{seat_num},{student.name},{student.student_id}\n")
+
+            print(f"✅ 成功：已生成 {file_name}，保存在项目根目录")
+
+        # 捕获文件写入的IO异常
+        except IOError as e:
+            print(f"❌ 错误：文件写入失败，失败原因：{e}")
