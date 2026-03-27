@@ -189,3 +189,88 @@ class Student:
         # 捕获文件写入的IO异常
         except IOError as e:
             print(f"❌ 错误：文件写入失败，失败原因：{e}")
+
+    # ==========================================
+    # 功能4：生成准考证目录与文件
+    # ==========================================
+    def generate_admission_tickets(self):
+        """
+        创建准考证文件夹，为每个学生生成独立的准考证txt文件
+        """
+        # 检查是否已生成考场安排（必须先有座位号才能生成准考证）
+        if not self.exam_seat_list:
+            print("⚠️  提示：请先生成考场安排表（先执行功能3）")
+            return
+
+        # 文件夹名称
+        dir_name = "准考证"
+        try:
+            # 作业要求：在根目录创建名为「准考证」的文件夹，exist_ok=True避免已存在时报错
+            os.makedirs(dir_name, exist_ok=True)
+
+            # 遍历考场顺序，为每个学生生成独立的准考证文件
+            for seat_num, student in enumerate(self.exam_seat_list, 1):
+                # 作业要求：生成01.txt、02.txt格式的文件名，zfill(2)实现两位数补零
+                file_name = f"{str(seat_num).zfill(2)}.txt"
+                # 拼接完整的文件路径
+                file_path = os.path.join(dir_name, file_name)
+
+                # 写入准考证内容
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(f"考场座位号：{seat_num}\n")
+                    f.write(f"姓名：{student.name}\n")
+                    f.write(f"学号：{student.student_id}\n")
+
+            print(f"✅ 成功：已在「{dir_name}」文件夹中生成所有准考证文件")
+
+        # 捕获文件夹创建、文件写入的异常
+        except Exception as e:
+            print(f"❌ 错误：生成准考证失败，失败原因：{e}")
+
+
+# ==========================================
+# 主程序入口
+# ==========================================
+def main():
+    # 1. 实例化考试系统
+    exam_system = ExamSystem()
+    # 作业要求：程序启动时读取文本文件
+    student_file = "人工智能编程语言学生名单.txt"
+    print("===== 学生信息与考场管理系统 =====")
+    print("正在初始化系统，加载学生数据...")
+    exam_system.load_student_data(student_file)
+
+    # 2. 主菜单循环
+    while True:
+        print("\n" + "=" * 40)
+        print("          系统功能菜单")
+        print("=" * 40)
+        print("1. 按学号查询学生信息")
+        print("2. 随机点名")
+        print("3. 生成考场安排表")
+        print("4. 生成准考证目录与文件")
+        print("5. 退出系统")
+        print("-" * 40)
+
+        # 获取用户菜单选择
+        choice = input("请输入功能选项（1-5）：")
+
+        # 根据用户选择调用对应功能
+        if choice == "1":
+            exam_system.search_student_by_id()
+        elif choice == "2":
+            exam_system.random_call_students()
+        elif choice == "3":
+            exam_system.generate_exam_arrangement()
+        elif choice == "4":
+            exam_system.generate_admission_tickets()
+        elif choice == "5":
+            print("👋 感谢使用，再见！")
+            break
+        else:
+            print("❌ 输入无效，请输入1-5之间的数字")
+
+
+# 程序启动入口
+if __name__ == "__main__":
+    main()
