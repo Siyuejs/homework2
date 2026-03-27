@@ -1,6 +1,7 @@
+
+import datetime
 import os
 import random
-import datetime
 
 class Student:
     def __init__(self, student_id, name, gender, class_name, college):
@@ -89,3 +90,27 @@ class Student:
             except FileNotFoundError:
                 print(f"❌ 错误：找不到文件 {file_path}，请确保文件在项目文件夹内")
                 return False
+
+    # ==========================================
+    # 功能1-查找：按学号查询学生信息
+    # ==========================================
+    def search_student_by_id(self):
+        """
+        用户输入学号，查询并打印学生完整信息
+        学号不存在时，给出友好错误提示
+        """
+        # 先判断是否已加载学生数据
+        if not self.students_dict:
+            print("⚠️  提示：请先加载学生数据")
+            return
+
+        # 获取用户输入的学号
+        input_id = input("请输入要查询的学生学号：")
+        # 判断学号是否在字典中
+        if input_id in self.students_dict:
+            # 存在则打印信息，自动调用Student类的__str__方法
+            print("\n===== 学生信息查询结果 =====")
+            print(self.students_dict[input_id])
+        else:
+            # 不存在则给出友好提示
+            print(f"❌ 错误：未找到学号为 {input_id} 的学生，请检查学号是否正确")
