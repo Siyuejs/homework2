@@ -114,3 +114,42 @@ class Student:
         else:
             # 不存在则给出友好提示
             print(f"❌ 错误：未找到学号为 {input_id} 的学生，请检查学号是否正确")
+
+    # ==========================================
+    # 功能2：随机点名
+    # ==========================================
+    def random_call_students(self):
+        """
+        随机抽取不重复的学生名单，处理非数字输入异常，限制人数范围
+        """
+        # 先判断是否已加载学生数据
+        if not self.students_dict:
+            print("⚠️  提示：请先加载学生数据")
+            return
+
+        # 获取学生总人数
+        total_count = len(self.students_dict)
+        # 循环直到用户输入合法内容
+        while True:
+            # 获取用户输入
+            user_input = input(f"请输入需要点名的人数（总人数：{total_count}）：")
+            try:
+                # 尝试把用户输入转为整数，非数字会触发ValueError
+                call_count = int(user_input)
+                # 判断人数是否在合法范围
+                if 1 <= call_count <= total_count:
+                    # 用random.sample实现不重复的随机抽取
+                    selected_students = random.sample(list(self.students_dict.values()), call_count)
+                    # 打印点名结果
+                    print("\n===== 随机点名名单 =====")
+                    for index, student in enumerate(selected_students, 1):
+                        print(f"{index}. 姓名：{student.name} | 学号：{student.student_id}")
+                    # 输入合法，跳出循环
+                    break
+                else:
+                    # 人数超出范围，给出提示
+                    print(f"❌ 输入错误：人数必须在 1 到 {total_count} 之间")
+
+            # 作业要求：捕获非数字输入的ValueError异常
+            except ValueError:
+                print("❌ 输入错误：请输入有效的整数，不要输入字母、符号等非数字内容")
